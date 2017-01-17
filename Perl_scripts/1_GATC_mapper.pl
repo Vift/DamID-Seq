@@ -1,13 +1,9 @@
-print "Enter the input file name:\n";
+print "Enter the input file name (without .txt):\n";
 $in=<STDIN>;
 chomp $in;
 print "\nloading data...\n";
-open(DAT, "$in") || die "no suchafile";
-$in=~/(.+)\.(.+)/;
-$in=$1;
-
+open(DAT, "${in}.txt") || die "no suchafile";
 open(GATC, "All_GATC_list.txt") || die "no suchafile";
-
 open(OUT, ">${in}_reads_per_GATC_filtered.txt");
 
 @gatc=<GATC>;
