@@ -1,4 +1,5 @@
-$slow_hardware=1;           #Set 0 if you beleive in your's hardware computing power
+my $slow_hardware=1;        #Set 0 if you beleive in your's hardware computing power
+my $opt_limit=2000;         #Used if $slow_hardware=1. The bigger $opt_limit is the slower calculation will be. But the accuracy of probability values for GATC-fragments with big reads values will be higher.
 print "Press Enter to use automatic P-value cutoff level. Alternatively type the desired manual P-value cutoff (from 0 to 1):\n";
 my $manpval=<STDIN>;
 chomp $manpval;
@@ -707,10 +708,9 @@ sub fishint
         my $np2 = $n12+$n22;       #C2
         my $np3 = $n13+$n23;       #C3
         my $npp = $n1p+$n2p;       #N
-        if($npp>3000 and $slow_hardware==1)
+        if($npp>$opt_limit and $slow_hardware==1)
         {
-            my $optimiser=10;
-            $optimiser=100 if $npp>30000;
+            my $optimiser=10*int($npp/$opt_limit);
             $n11=sprintf("%.0f",$n11/$optimiser); #a
             $n12=sprintf("%.0f",$n12/$optimiser); #b
             $n13=sprintf("%.0f",$n13/$optimiser); #c
@@ -803,6 +803,19 @@ sub fishint
         my $np1 = $n11+$n21;       #C1
         my $np2 = $n12+$n22;       #C2
         my $npp = $n1p+$n2p;       #N
+        if($npp>$opt_limit and $slow_hardware==1)
+        {
+            my $optimiser=10*int($npp/$opt_limit);
+            $n11=sprintf("%.0f",$n11/$optimiser); #a
+            $n12=sprintf("%.0f",$n12/$optimiser); #b
+            $n21=sprintf("%.0f",$n21/$optimiser); #d
+            $n22=sprintf("%.0f",$n22/$optimiser); #e
+            $n1p = $n11+$n12;  #R1
+            $n2p = $n21+$n22;  #R2
+            $np1 = $n11+$n21;       #C1
+            $np2 = $n12+$n22;       #C2
+            $npp = $n1p+$n2p;       #N
+        }        
         my @num=sort{$b<=>$a} ($n1p,$n2p,$np1,$np2);
         my @denom=sort{$b<=>$a} ($n11,$n12,$n21,$n22,$npp);
         my @integralpval=();
