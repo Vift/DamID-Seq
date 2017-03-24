@@ -1,9 +1,9 @@
-print "Enter the input file name (without .txt):\n";
+print "Enter the input file name (without .txt or .bed):\n";
 $in=<STDIN>;
 chomp $in;
 print "\nloading data...\n";
-open(DAT, "${in}.txt") || die "no suchafile";
-open(GATC, "All_GATC_list.txt") || die "no suchafile";
+open(DAT, "${in}.txt") || open(DAT, "${in}.bed") || die "can't find file ${in}.txt or ${in}.bed in the current directory";
+open(GATC, "All_GATC_list.txt") || die "can't find file All_GATC_list.txt in the current directory";
 open(OUT, ">${in}_reads_per_GATC_filtered.txt");
 
 @gatc=<GATC>;
